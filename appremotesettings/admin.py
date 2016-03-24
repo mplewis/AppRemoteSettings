@@ -21,5 +21,3 @@ class AppAdmin(ModelAdmin):
 
 
 admin.site.register(App, AppAdmin)
-admin.site.register(Identifier)
-admin.site.register(Key)
