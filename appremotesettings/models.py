@@ -1,4 +1,4 @@
-from django.db.models import Model, TextField, IntegerField, ForeignKey
+from django.db.models import Model, CharField, IntegerField, ForeignKey
 
 
 DATATYPE_BOOL = 1
@@ -14,19 +14,19 @@ DATATYPES = (
 
 
 class App(Model):
-    name = TextField()
-    desc = TextField()
+    name = CharField(max_length=255)
+    desc = CharField(max_length=255)
 
 
 class Identifier(Model):
     app = ForeignKey(App)
-    desc = TextField()
-    value = TextField()
+    desc = CharField(max_length=255)
+    value = CharField(max_length=255)
 
 
 class Key(Model):
     app = ForeignKey(App)
-    desc = TextField()
-    key = TextField()
-    value = TextField()
+    desc = CharField(max_length=255)
+    key = CharField(max_length=255)
+    value = CharField(max_length=255)
     datatype = IntegerField(choices=DATATYPES, default=DATATYPE_BOOL)
