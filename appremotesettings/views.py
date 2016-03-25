@@ -1,5 +1,7 @@
 from django.http import HttpResponse, Http404, HttpResponseNotAllowed
 
+from appremotesettings.models import Identifier
+
 
 def select_api_version(request, api_version):
     if api_version == '1':
