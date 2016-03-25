@@ -16,10 +16,12 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import RedirectView
 
 from appremotesettings.views import select_api_version
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url('^api/v([0-9]+)/', csrf_exempt(select_api_version))
+    url(r'^api/v([0-9]+)/', csrf_exempt(select_api_version)),
+    url(r'^', RedirectView.as_view(url='admin/')),
 ]
