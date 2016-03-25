@@ -6,8 +6,16 @@ import plistlib
 import json
 
 
+class DateTimeEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if hasattr(obj, 'isoformat'):
+            return obj.isoformat()
+
+
 def jsonify(data, *args, response=HttpResponse, **kwargs):
-    return response(*args, content=json.dumps(data), content_type='application/json', **kwargs)
+    for key, value in data.items():
+        print(type(value))
+    return response(*args, content=json.dumps(data, cls=DateTimeEncoder), content_type='application/json', **kwargs)
 
 
 def error(message):
