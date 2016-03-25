@@ -1,4 +1,5 @@
 from django.db.models import Model, CharField, IntegerField, ForeignKey
+from django.core.exceptions import ValidationError
 
 import dateutil.parser
 
@@ -15,6 +16,25 @@ DATATYPES = (
     (DATATYPE_STRING, "String"),
     (DATATYPE_DATE, "Date"),
 )
+
+
+def cast(raw, to):
+    if to == DATATYPE_BOOL:
+        raw = raw.lower().strip()
+        if raw == 'true':
+            return True
+        elif raw == 'false':
+            return False
+        else:
+            raise ValueError('{} must be "true" or "false"'.format(raw))
+    elif to == DATATYPE_INT:
+        return int(raw)
+    elif to == DATATYPE_FLOAT:
+        return float(raw)
+    elif to == DATATYPE_STRING:
+        return str(raw)
+    elif to == DATATYPE_DATE:
+        return dateutil.parser.parse(raw)
 
 
 class App(Model):
@@ -47,17 +67,14 @@ class Key(Model):
     def __str__(self):
         return '{} - {} ({}: {})'.format(self.app.name, self.desc, self.key, self.value)
 
+    def clean(self):
+        try:
+            self.value = self.typed_value()
+        except ValueError as e:
+            raise ValidationError(str(e))
+        # Ensure dates get serialized as ISO 8601
+        if self.datatype == DATATYPE_DATE:
+            self.value = self.value.isoformat()
+
     def typed_value(self):
-        if self.datatype == DATATYPE_BOOL:
-            if 'true' in self.value.lower().strip():
-                return True
-            else:
-                return False
-        elif self.datatype == DATATYPE_INT:
-            return int(self.value)
-        elif self.datatype == DATATYPE_FLOAT:
-            return float(self.value)
-        elif self.datatype == DATATYPE_STRING:
-            return self.value
-        elif self.datatype == DATATYPE_DATE:
-            return dateutil.parser.parse(self.value)
+        return cast(self.value, self.datatype)

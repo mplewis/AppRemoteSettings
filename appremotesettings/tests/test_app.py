@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+
 from appremotesettings.models import App, Key
 from appremotesettings import models
 
@@ -28,3 +30,21 @@ def test_app_keys():
         'TEST_STRING': 'yarn',
         'TEST_DATE': datetime(2016, 3, 25, 2, 7, 15, tzinfo=tzlocal())
     })
+
+
+@pytest.mark.django_db
+def test_bad_casting():
+    app = App(name='TestApp', desc='TestDesc')
+    app.save()
+    key = Key(app=app, desc='KeyDesc', key='TEST_BOOL', value='Invalid', datatype=models.DATATYPE_BOOL)
+    key.clean.when.called_with().should.throw(ValidationError)
+
+
+@pytest.mark.django_db
+def test_date_to_iso8601():
+    app = App(name='TestApp', desc='TestDesc')
+    app.save()
+    key = Key(app=app, desc='KeyDesc', key='TEST_DATE', value='Jan 11, 1992, 7:34 PM -6', datatype=models.DATATYPE_DATE)
+    key.clean()
+    key.save()
+    key.value.should.eql('1992-01-11T19:34:00-06:00')
