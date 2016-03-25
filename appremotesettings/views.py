@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseNotAllow
 
 from appremotesettings.models import Identifier
 
+import plistlib
 import json
 
 
@@ -50,4 +51,15 @@ def api_v1(request):
         return bad_request('No app found with identifier "{}"'.format(ident_raw))
 
     app = ident[0].app
-    return jsonify(app.typed_keys())
+    keys = app.typed_keys()
+    try:
+        fmt = query['format']
+    except KeyError:
+        return jsonify(keys)
+
+    if fmt == 'json':
+        return jsonify(keys)
+    elif fmt == 'plist':
+        return HttpResponse(content=plistlib.dumps(keys), content_type='application/x-plist')
+    else:
+        return bad_request('Unsupported format "{}"'.format(fmt))
