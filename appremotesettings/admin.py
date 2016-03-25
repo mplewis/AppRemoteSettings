@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import TabularInline, ModelAdmin
 
+from appremotesettings import settings
 from .models import App, Identifier, Key
 
 
@@ -21,3 +22,4 @@ class AppAdmin(ModelAdmin):
 
 
 admin.site.register(App, AppAdmin)
+admin.site.site_header = settings.ADMIN_SITE_HEADER
