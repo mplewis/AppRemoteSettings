@@ -2,7 +2,7 @@ from django.db.models import Model, CharField, IntegerField, ForeignKey
 from django.core.exceptions import ValidationError
 
 import dateutil.parser
-
+from django.template.defaultfilters import pluralize
 
 DATATYPE_BOOL = 1
 DATATYPE_INT = 2
@@ -39,10 +39,14 @@ def cast(raw, to):
 
 class App(Model):
     name = CharField(max_length=255)
-    desc = CharField(max_length=255, verbose_name='description')
+    desc = CharField(max_length=255, verbose_name='description', blank=True)
 
     def __str__(self):
-        return '{} - {}'.format(self.name, self.desc)
+        if not self.desc:
+            return self.name
+        kc = self.key_set.count()
+        return '{} - {} ({} key{})'.format(
+            self.name, self.desc, kc, pluralize(kc))
 
     def typed_keys(self):
         return {key.key: key.typed_value() for key in self.key_set.all()}
@@ -50,22 +54,26 @@ class App(Model):
 
 class Identifier(Model):
     app = ForeignKey(App)
-    desc = CharField(max_length=255, verbose_name='description')
+    desc = CharField(max_length=255, verbose_name='description', blank=True)
     value = CharField(max_length=255)
 
     def __str__(self):
-        return '{} - {} ({})'.format(self.app.name, self.desc, self.value)
+        if not self.desc:
+            return self.value
+        return '{} ({})'.format(self.desc, self.value)
 
 
 class Key(Model):
     app = ForeignKey(App)
-    desc = CharField(max_length=255, verbose_name='description')
+    desc = CharField(max_length=255, verbose_name='description', blank=True)
     key = CharField(max_length=255)
     value = CharField(max_length=255)
     datatype = IntegerField(choices=DATATYPES, default=DATATYPE_BOOL, verbose_name='data type')
 
     def __str__(self):
-        return '{} - {} ({}: {})'.format(self.app.name, self.desc, self.key, self.value)
+        if not self.desc:
+            return '{}: {}'.format(self.key, self.value)
+        return '{} ({}: {})'.format(self.desc, self.key, self.value)
 
     def clean(self):
         try:
