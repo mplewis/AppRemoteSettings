@@ -1,5 +1,7 @@
 from django.db.models import Model, CharField, IntegerField, ForeignKey
 
+import dateutil.parser
+
 
 DATATYPE_BOOL = 1
 DATATYPE_INT = 2
@@ -22,6 +24,9 @@ class App(Model):
     def __str__(self):
         return '{} - {}'.format(self.name, self.desc)
 
+    def typed_keys(self):
+        return {key.key: key.typed_value() for key in self.key_set.all()}
+
 
 class Identifier(Model):
     app = ForeignKey(App)
@@ -41,3 +46,18 @@ class Key(Model):
 
     def __str__(self):
         return '{} - {} ({}: {})'.format(self.app.name, self.desc, self.key, self.value)
+
+    def typed_value(self):
+        if self.datatype == DATATYPE_BOOL:
+            if 'true' in self.value.lower().strip():
+                return True
+            else:
+                return False
+        elif self.datatype == DATATYPE_INT:
+            return int(self.value)
+        elif self.datatype == DATATYPE_FLOAT:
+            return float(self.value)
+        elif self.datatype == DATATYPE_STRING:
+            return self.value
+        elif self.datatype == DATATYPE_DATE:
+            return dateutil.parser.parse(self.value)
