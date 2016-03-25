@@ -55,7 +55,7 @@ class App(Model):
 class Identifier(Model):
     app = ForeignKey(App)
     desc = CharField(max_length=255, verbose_name='description', blank=True)
-    value = CharField(max_length=255)
+    value = CharField(max_length=255, unique=True)
 
     def __str__(self):
         if not self.desc:
