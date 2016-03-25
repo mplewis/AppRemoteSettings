@@ -14,6 +14,10 @@ def post_json(client, url, data, *args, **kwargs):
                        content_type='application/json', **kwargs)
 
 
+def json_from(response):
+    return json.loads(response.content.decode())
+
+
 def test_v1_bad_method():
     c = Client()
     resp = c.get('/api/v1/')
@@ -25,7 +29,7 @@ def test_v1_no_json():
     c = Client()
     resp = c.post('/api/v1/', data={'dummy data': 'this is not json'})
     resp.status_code.should.eql(400)
-    resp.content.decode().should.contain('Could not parse JSON')
+    json_from(resp).should.eql({'error': 'Could not parse JSON'})
 
 
 @pytest.mark.django_db
@@ -34,7 +38,7 @@ def test_v1_no_app():
     c = Client()
     resp = post_json(c, '/api/v1/', data)
     resp.status_code.should.eql(400)
-    json.loads(resp.content.decode()).should.eql(
+    json_from(resp).should.eql(
         {'error': 'No app found with identifier "com.mplewis.myapp"'})
 
 
@@ -56,7 +60,7 @@ def test_v1_app():
     c = Client()
     resp = post_json(c, '/api/v1/', data)
     resp.status_code.should.eql(200)
-    json.loads(resp.content.decode()).should.eql(
+    json_from(resp).should.eql(
         {'BOOL_SETTING': True,
          'INT_SETTING': 42,
          'STRING_SETTING': 'yarn'})
