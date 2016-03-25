@@ -6,7 +6,7 @@ import json
 
 
 def jsonify(data, *args, response=HttpResponse, **kwargs):
-    return response(*args, content=json.dumps(data), **kwargs)
+    return response(*args, content=json.dumps(data), content_type='application/json', **kwargs)
 
 
 def error(message):
