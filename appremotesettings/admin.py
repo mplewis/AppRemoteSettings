@@ -7,7 +7,7 @@ from .models import App, Identifier, Key
 class IdentifierInline(TabularInline):
     model = Identifier
     extra = 1
-    fields = ('desc', 'value')
+    fields = ('value', 'desc')
 
 
 class KeyInline(TabularInline):
