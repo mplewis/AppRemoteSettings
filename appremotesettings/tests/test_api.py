@@ -28,6 +28,7 @@ def create_app_and_keys():
         Key(app=app, key='BOOL_SETTING', value='true', datatype=models.DATATYPE_BOOL),
         Key(app=app, key='INT_SETTING', value='42', datatype=models.DATATYPE_INT),
         Key(app=app, key='STRING_SETTING', value='yarn', datatype=models.DATATYPE_STRING),
+        # TODO: Test and verify dates are serialized properly to JSON
     ]
     for key in keys:
         key.save()
@@ -64,7 +65,7 @@ def test_v1_no_app():
 
 
 @pytest.mark.django_db
-def test_v1_app():
+def test_v1_json():
     create_app_and_keys()
     data = {'app_id': 'com.mplewis.myapp'}
     c = Client()
@@ -75,7 +76,7 @@ def test_v1_app():
 
 
 @pytest.mark.django_db
-def test_v1_app():
+def test_v1_plist():
     create_app_and_keys()
     data = {'app_id': 'com.mplewis.myapp', 'format': 'plist'}
     c = Client()
@@ -83,3 +84,13 @@ def test_v1_app():
     resp.status_code.should.eql(200)
     resp['Content-Type'].should.eql('application/x-plist')
     plistlib.loads(resp.content).should.eql(expected_keys)
+
+
+@pytest.mark.django_db
+def test_v1_bad_format():
+    create_app_and_keys()
+    data = {'app_id': 'com.mplewis.myapp', 'format': 'invalid'}
+    c = Client()
+    resp = post_json(c, '/api/v1/', data)
+    resp.status_code.should.eql(400)
+    json_from(resp).should.eql({'error': 'Unsupported format "invalid"'})
