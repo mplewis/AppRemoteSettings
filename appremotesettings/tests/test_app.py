@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.test import Client
 
 from appremotesettings.models import App, Key
 from appremotesettings import models
@@ -48,3 +49,16 @@ def test_date_to_iso8601():
     key.clean()
     key.save()
     key.value.should.eql('1992-01-11T19:34:00-06:00')
+
+
+def test_v1_bad_method():
+    c = Client()
+    resp = c.get('/api/v1/',)
+    resp.status_code.should.eql(405)
+
+
+def test_v1_post():
+    data = {'app_id': 'com.mplewis.myapp'}
+    c = Client()
+    resp = c.post('/api/v1/', data)
+    resp.status_code.should.eql(200)
