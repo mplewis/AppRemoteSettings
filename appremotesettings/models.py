@@ -42,11 +42,10 @@ class App(Model):
     desc = CharField(max_length=255, verbose_name='description', blank=True)
 
     def __str__(self):
-        if not self.desc:
-            return self.name
         kc = self.key_set.count()
-        return '{} - {} ({} key{})'.format(
-            self.name, self.desc, kc, pluralize(kc))
+        if not self.desc:
+            return '{} ({} key{})'.format(self.name, kc, pluralize(kc))
+        return '{} ({} key{}) - {}'.format(self.name, kc, pluralize(kc), self.desc)
 
     def typed_keys(self):
         return {key.key: key.typed_value() for key in self.key_set.all()}
