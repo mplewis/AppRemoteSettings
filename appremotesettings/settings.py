@@ -10,7 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
+from django.utils.crypto import get_random_string
+
+import dj_database_url
+
 import os
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +25,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$!*ytbs$%pw=7ix_xfhj5iuimcftax$o!f3^a=h-#_z9m6x&#1'
+# https://github.com/etianen/django-herokuapp/blob/master/README.rst#improving-site-security
+SECRET_KEY = os.environ.get("SECRET_KEY", get_random_string(50, "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)"))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'appremotesettings'
+    'appremotesettings',
+    'herokuapp',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -74,12 +81,9 @@ WSGI_APPLICATION = 'appremotesettings.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
-
+# https://github.com/etianen/django-herokuapp/blob/master/README.rst#database-hosting---heroku-postgres
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-    }
+    "default": dj_database_url.config(default='postgres://localhost/postgres'),
 }
 
 
@@ -124,3 +128,25 @@ STATIC_URL = '/static/'
 
 # Admin site header (replaces "Django administration")
 ADMIN_SITE_HEADER = 'AppRemoteSettings Dashboard'
+
+
+# https://github.com/etianen/django-herokuapp/blob/master/README.rst#adding-support-for-heroku-ssl
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
+# https://github.com/etianen/django-herokuapp/blob/master/README.rst#outputting-logs-to-heroku-logplex
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "level": "INFO",
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+        }
+    }
+}
