@@ -16,6 +16,13 @@ DATATYPES = (
     (DATATYPE_STRING, "String"),
     (DATATYPE_DATE, "Date"),
 )
+DATATYPE_SLUGS = {
+    DATATYPE_BOOL: "bool",
+    DATATYPE_INT: "int",
+    DATATYPE_FLOAT: "float",
+    DATATYPE_STRING: "string",
+    DATATYPE_DATE: "date"
+}
 
 
 def cast(raw, to):

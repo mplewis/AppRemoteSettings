@@ -76,6 +76,24 @@ def test_v1_json():
 
 
 @pytest.mark.django_db
+def test_v1_json_annotated():
+    create_app_and_keys()
+    data = {'app_id': 'com.mplewis.myapp', 'format': 'json_annotated'}
+    c = Client()
+    resp = post_json(c, '/api/v1/', data)
+    resp.status_code.should.eql(200)
+    resp['Content-Type'].should.eql('application/json')
+    json_from(resp).should.eql({
+        "values": expected_keys,
+        "types": {
+            "BOOL_SETTING": "bool",
+            "INT_SETTING": "int",
+            "STRING_SETTING": "string"
+        }
+    })
+
+
+@pytest.mark.django_db
 def test_v1_plist():
     create_app_and_keys()
     data = {'app_id': 'com.mplewis.myapp', 'format': 'plist'}

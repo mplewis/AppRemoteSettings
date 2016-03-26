@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseNotAllowed, HttpResponseBadRequest
 
-from appremotesettings.models import Identifier
+from appremotesettings.models import Identifier, DATATYPE_SLUGS
 
 import plistlib
 import json
@@ -60,6 +60,7 @@ def api_v1(request):
 
     app = ident[0].app
     keys = app.typed_keys()
+
     try:
         fmt = query['format']
     except KeyError:
@@ -67,7 +68,24 @@ def api_v1(request):
 
     if fmt == 'json':
         return jsonify(keys)
+
+    elif fmt == 'json_annotated':
+        # Store key-value pairs in "values"
+        typed = {'values': keys}
+
+        # Add type annotations and store in "types"
+        annotations = {}
+        for pair in app.key_set.all():
+            key = pair.key
+            ktype_raw = pair.datatype
+            ktype = DATATYPE_SLUGS[ktype_raw]
+            annotations[key] = ktype
+        typed['types'] = annotations
+
+        return jsonify(typed)
+
     elif fmt == 'plist':
         return HttpResponse(content=plistlib.dumps(keys), content_type='application/x-plist')
+
     else:
         return bad_request('Unsupported format "{}"'.format(fmt))
