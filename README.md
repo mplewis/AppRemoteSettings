@@ -1,6 +1,6 @@
 # AppRemoteSettings
 
-Update variables in your production iOS apps, live. Skip the lengthy App Store and Play Store review process.
+Update variables in your production apps, live. Skip the lengthy App Store and Play Store review process.
 
 Connect your apps to AppRemoteSettings with a tiny native client:
 

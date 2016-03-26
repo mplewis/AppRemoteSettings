@@ -1,8 +1,7 @@
 {
   "name": "AppRemoteSettings",
-  "description": "A barebones Node.js app using Express 4",
-  "repository": "https://github.com/heroku/node-js-sample",
-  "logo": "https://node-js-sample.herokuapp.com/node.png",
+  "description": "Update variables in your production apps, live.",
+  "repository": "https://github.com/mplewis/AppRemoteSettings",
   "scripts": {
     "postdeploy": "./manage.py migrate"
   },
