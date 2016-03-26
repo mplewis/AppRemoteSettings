@@ -4,4 +4,7 @@ machine:
 
 test:
   override:
-    - py.test
+    - py.test:
+        parallel: true
+        files:
+          - appremotesettings/tests/**/*.py
