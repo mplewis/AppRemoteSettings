@@ -1,4 +1,4 @@
-# AppRemoteSettings: iOS + Swift Client
+# AppRemoteSettings
 
 Update variables in your production iOS apps, live. Skip the lengthy App Store and Play Store review process.
 
