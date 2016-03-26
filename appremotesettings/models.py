@@ -8,20 +8,17 @@ DATATYPE_BOOL = 1
 DATATYPE_INT = 2
 DATATYPE_FLOAT = 3
 DATATYPE_STRING = 4
-DATATYPE_DATE = 5
 DATATYPES = (
     (DATATYPE_BOOL, "Boolean"),
     (DATATYPE_INT, "Integer"),
     (DATATYPE_FLOAT, "Float"),
     (DATATYPE_STRING, "String"),
-    (DATATYPE_DATE, "Date"),
 )
 DATATYPE_SLUGS = {
     DATATYPE_BOOL: "bool",
     DATATYPE_INT: "int",
     DATATYPE_FLOAT: "float",
     DATATYPE_STRING: "string",
-    DATATYPE_DATE: "date"
 }
 
 
@@ -40,8 +37,6 @@ def cast(raw, to):
         return float(raw)
     elif to == DATATYPE_STRING:
         return str(raw)
-    elif to == DATATYPE_DATE:
-        return dateutil.parser.parse(raw)
 
 
 class App(Model):
@@ -86,9 +81,6 @@ class Key(Model):
             self.value = self.typed_value()
         except ValueError as e:
             raise ValidationError(str(e))
-        # Ensure dates get serialized as ISO 8601
-        if self.datatype == DATATYPE_DATE:
-            self.value = self.value.isoformat()
 
     def typed_value(self):
         return cast(self.value, self.datatype)
