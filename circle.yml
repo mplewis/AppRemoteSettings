@@ -4,5 +4,4 @@ machine:
 
 test:
   override:
-    - py.test --junitxml=$CIRCLE_TEST_REPORTS/junit.xml:
-        parallel: true
+    - py.test --junitxml=$CIRCLE_TEST_REPORTS/junit.xml
