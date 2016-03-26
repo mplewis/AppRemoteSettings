@@ -4,7 +4,5 @@ machine:
 
 test:
   override:
-    - py.test:
+    - py.test --junitxml=$CIRCLE_TEST_REPORTS/junit.xml:
         parallel: true
-        files:
-          - appremotesettings/tests/**/*.py
