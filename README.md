@@ -22,6 +22,15 @@ Connect your apps to AppRemoteSettings with a tiny native client:
 
 Coming soon.
 
+# Updating
+
+To update your deployed Heroku app from the master branch of AppRemoteSettings:
+
+1. `git clone https://github.com/mplewis/AppRemoteSettings`
+2. `cd AppRemoteSettings`
+3. `heroku git:remote -a YOUR_APP_NAME`
+4. `git push heroku master`
+
 # Contributions
 
 Bug reports, fixes, or features? Feel free to open an issue or pull request any time. You can also email me at [matt@mplewis.com](mailto:matt@mplewis.com).
