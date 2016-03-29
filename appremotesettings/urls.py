@@ -21,7 +21,12 @@ from django.views.generic import RedirectView
 from appremotesettings.views import select_api_version
 
 urlpatterns = [
+    # /admin/: Admin panel
     url(r'^admin/', admin.site.urls),
-    url(r'^api/v([0-9]+)/', csrf_exempt(select_api_version)),
-    url(r'^', RedirectView.as_view(url='admin/')),
+
+    # /api/v#: API endpoint
+    url(r'^api/v([0-9]+)/?$', csrf_exempt(select_api_version)),
+
+    # Send all other requests to /admin/
+    url(r'^', RedirectView.as_view(url='/admin/')),
 ]
