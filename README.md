@@ -12,7 +12,7 @@ Connect your apps to AppRemoteSettings with a tiny native client:
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/mplewis/AppRemoteSettings)
 
 1. Click the **Deploy to Heroku** button above.
-2. Give your app a name. Leave the settings as-is and click **Deploy for Free.**
+2. Give your app a name. Leave the config variables as they are. Click **Deploy for Free.**
 3. [Install the Heroku Toolbelt.](https://toolbelt.heroku.com/)
 4. Create your superuser account:  
    `heroku run ./manage.py createsuperuser -a YOUR_APP_NAME`
