@@ -5,7 +5,7 @@ Update variables in your production apps, live. Skip the lengthy App Store and P
 Connect your apps to AppRemoteSettings with a tiny native client:
 
 * [iOS: Swift module](https://github.com/mplewis/AppRemoteSettings-iOS)
-* Android: Java module (coming soon)
+* [Android: Java module](https://github.com/mplewis/AppRemoteSettings-Android)
 
 # Installation
 
